@@ -5,14 +5,15 @@ import Html exposing (a)
 
 -- ROUTING
 type Route
-    = Home String
-    | Algo String
+    = Home
+    | Algos String
 
-routeParser : Parser (Route -> a) a
-routeParser =
+
+urlParser : Parser (Route -> a) a
+urlParser =
     oneOf
-        [ map Home top
-        , map Algo (s "algo" </> string)
+        [ map Home <| top
+        , map Algos <| s "algos" </> string
         ]
 
 -- PUBLIC 

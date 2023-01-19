@@ -7,29 +7,46 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Dict exposing (update)
 
+import Url.Parser as Parser exposing (Parser, (</>))
+import Html exposing (a)
 
--- MAIN
-main : Program () Model Msg
-main =
-    Browser.application
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        , onUrlChange = UrlChanged
-        , onUrlRequest = LinkClicked
-        } 
+-- ROUTING
+type Route
+    = Home
+    | Algos String
+    | Error404 String
+
+routeToString : Maybe Route -> String
+routeToString route =
+  case route of
+    Just (Algos algo) -> algo
+    Just Home -> "/"
+    Just (Error404 badUrl) -> badUrl
+    _ -> "Nothing"
+
+urlParser : Parser (Route -> a) a
+urlParser =
+    Parser.oneOf
+        [ Parser.map Home <| Parser.top
+        , Parser.map Algos <| Parser.s "algos" </> Parser.string
+        , Parser.map Error404 <| Parser.string
+        ] 
 
 -- MODEL
 
 type alias Model =
-    { key : Nav.Key
+    { navKey : Nav.Key
+    , route : Maybe Route
     , url : Url.Url
     }
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
-    ( Model key url, Cmd.none)
+init _ url key =
+    ( { navKey = key
+      , route = Parser.parse urlParser url
+      , url = url
+      }
+    , Cmd.none)
 
 -- UPDATE
 type Msg
@@ -44,13 +61,13 @@ update msg model =
 
       case urlRequest of
         Browser.Internal url ->
-          ( model, Nav.pushUrl model.key (Url.toString url) )
+          ( model, Nav.pushUrl model.navKey (Url.toString url) )
 
         Browser.External href ->
           ( model, Nav.load href )
 
     UrlChanged url ->
-      ( { model | url = url }
+      ( { model | route = Parser.parse urlParser url, url = url }
       , Cmd.none
       )
 
@@ -62,20 +79,18 @@ subscriptions _ =
 
 -- VIEW
 
-
-
 view : Model -> Browser.Document Msg
 view model =
   { title = "URL Interceptor"
   , body =
       [ text "The current URL is: "
-      , b [] [ text (Url.toString model.url) ]
+      , b [] [ text (routeToString model.route) ]
       , ul []
-          [ navItem "/home"
-          , navItem "/profile"
-          , navItem "/reviews/the-century-of-the-self"
-          , navItem "/reviews/public-opinion"
-          , navItem "/reviews/shah-of-shahs"
+          [ navItem "/"
+          , navItem "/algos/zebra"
+          , navItem "/algos/double-linked-list-search"
+          , navItem "/algos/quick-sort"
+          , navItem "/algos/graph-path-finding"
           ]
       ]
   }
@@ -84,3 +99,15 @@ view model =
 navItem : String -> Html msg
 navItem path =
   li [] [ a [ href path ] [ text path ] ]
+
+-- MAIN
+main : Program () Model Msg
+main =
+    Browser.application
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        , onUrlChange = UrlChanged
+        , onUrlRequest = LinkClicked
+        }
