@@ -1,0 +1,20 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "my portfolio and blog as craftman developer",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev" : "elm-live src/Main.elm --pushstate --hot --start-page=public/index.html -- --output=assets/elm.js --debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonascarfantan/portfolio.git"
+  },
+  "author": "jonas carfantan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jonascarfantan/portfolio/issues"
+  },
+  "homepage": "https://github.com/jonascarfantan/portfolio#readme"
+}
