@@ -1,7 +1,7 @@
 {
-  "name": "portfolio",
+  "name": "Browser-Lab",
   "version": "1.0.0",
-  "description": "my portfolio and blog as craftman developer",
+  "description": "A sandbox to test different things in the browser",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jonascarfantan/portfolio.git"
+    "url": "git+https://github.com/jonascarfantan/Browser-Lab.git"
   },
   "author": "jonas carfantan",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jonascarfantan/portfolio/issues"
+    "url": "https://github.com/jonascarfantan/Browser-Lab/issues"
   },
-  "homepage": "https://github.com/jonascarfantan/portfolio#readme"
+  "homepage": "https://github.com/jonascarfantan/Browser-Lab#readme"
 }

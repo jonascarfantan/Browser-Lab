@@ -5,45 +5,21 @@ import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Dict exposing (update)
 
-import Url.Parser as Parser exposing (Parser, (</>))
-import Html exposing (a)
-
--- ROUTING
-type Route
-    = Home
-    | Algos String
-    | Error404 String
-
-routeToString : Maybe Route -> String
-routeToString route =
-  case route of
-    Just (Algos algo) -> algo
-    Just Home -> "/"
-    Just (Error404 badUrl) -> badUrl
-    _ -> "Nothing"
-
-urlParser : Parser (Route -> a) a
-urlParser =
-    Parser.oneOf
-        [ Parser.map Home <| Parser.top
-        , Parser.map Algos <| Parser.s "algos" </> Parser.string
-        , Parser.map Error404 <| Parser.string
-        ] 
+import Router
 
 -- MODEL
 
 type alias Model =
     { navKey : Nav.Key
-    , route : Maybe Route
+    , route : Router.Route
     , url : Url.Url
     }
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     ( { navKey = key
-      , route = Parser.parse urlParser url
+      , route = Router.toRoute url
       , url = url
       }
     , Cmd.none)
@@ -67,7 +43,7 @@ update msg model =
           ( model, Nav.load href )
 
     UrlChanged url ->
-      ( { model | route = Parser.parse urlParser url, url = url }
+      ( { model | route = Router.toRoute url, url = url }
       , Cmd.none
       )
 
@@ -84,13 +60,13 @@ view model =
   { title = "URL Interceptor"
   , body =
       [ text "The current URL is: "
-      , b [] [ text (routeToString model.route) ]
+      , b [] [ text (Url.toString model.url) ]
       , ul []
           [ navItem "/"
-          , navItem "/algos/zebra"
-          , navItem "/algos/double-linked-list-search"
-          , navItem "/algos/quick-sort"
-          , navItem "/algos/graph-path-finding"
+          , navItem "/algorithm/zebra"
+          , navItem "/algorithm/double-linked-list-search"
+          , navItem "/algorithm/quick-sort"
+          , navItem "/algorithm/graph-path-finding"
           ]
       ]
   }
