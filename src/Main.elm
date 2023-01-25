@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 
 import Router
+import Template
 
 -- MODEL
 
@@ -58,20 +59,22 @@ subscriptions _ =
 view : Model -> Browser.Document Msg
 view model =
   { title = "URL Interceptor"
-  , body =
-      [ text "The current URL is: "
-      , b [] [ text (Url.toString model.url) ]
-      , ul []
-          [ navItem "/"
-          , navItem "/algorithm/zebra"
-          , navItem "/algorithm/double-linked-list-search"
-          , navItem "/algorithm/quick-sort"
-          , navItem "/algorithm/graph-path-finding"
-          ]
-      ]
+  , body = [ Template.render ]
+      
   }
 
-
+elmHtml : Model -> List (Html Msg)
+elmHtml model =
+  [ text "The current URL is: "
+  , b [] [ text (Url.toString model.url) ]
+  , ul []
+      [ navItem "/"
+      , navItem "/algorithm/zebra"
+      , navItem "/algorithm/double-linked-list-search"
+      , navItem "/algorithm/quick-sort"
+      , navItem "/algorithm/graph-path-finding"
+      ]
+  ]
 navItem : String -> Html msg
 navItem path =
   li [] [ a [ href path ] [ text path ] ]
